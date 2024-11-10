@@ -2,6 +2,18 @@
 
 The plugin can bring Flash animations into Godot.
 
+## Feature
+
+- [x] Support for importing Flash animations and Blend Render.
+- [x] Multi Animation.  (Require follow certain rules, refer to the conversion tool.)
+- [ ] Filter Render.
+
+## Demo
+
+![demo](./assets/images/8e68e59cf2e75b17a067c9f0eda1505a.png)
+
+## Usage
+
 1. Use
     Download the Flash conversion tool from the following link:  
    [Swf Tool](https://github.com/aojiaoxiaolinlin/swf_animation)

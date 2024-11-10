@@ -1,27 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcd30ct28jtcp"]
+[gd_scene load_steps=4 format=3 uid="uid://dcd30ct28jtcp"]
 
-[ext_resource type="Script" path="res://sprite_2d.gd" id="1_50ijd"]
-[ext_resource type="Script" path="res://addons/swf/SwfAnimation.gd" id="3_qbyol"]
-[ext_resource type="JSON" path="res://spirit2159src.json" id="4_5o0ln"]
-[ext_resource type="Shader" uid="uid://du6eqhxydtn76" path="res://node_2d.tres" id="4_jiftt"]
-[ext_resource type="Texture2D" uid="uid://cnrcxr2kahg0a" path="res://spirit2159src.sprites/3.tres" id="5_xg4ty"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xlmft"]
-shader = ExtResource("4_jiftt")
+[ext_resource type="Script" path="res://sprite_2d.gd" id="1_c3xy4"]
+[ext_resource type="Script" path="res://addons/swf/SwfAnimation.gd" id="2_p6f6u"]
+[ext_resource type="JSON" path="res://spirit2159src.json" id="3_bly2r"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_50ijd")
-
-[node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(427, 422)
-
-[node name="Sprite2D" type="Sprite2D" parent="SubViewport"]
-material = SubResource("ShaderMaterial_xlmft")
-position = Vector2(267, 267)
-texture = ExtResource("5_xg4ty")
+script = ExtResource("1_c3xy4")
 
 [node name="SwfAnimation" type="Node2D" parent="."]
-position = Vector2(770, 336)
-script = ExtResource("3_qbyol")
-animation_data = ExtResource("4_5o0ln")
-swf_current_animation = 11
+position = Vector2(793, 329)
+script = ExtResource("2_p6f6u")
+animation_data = ExtResource("3_bly2r")
+swf_current_animation = 12

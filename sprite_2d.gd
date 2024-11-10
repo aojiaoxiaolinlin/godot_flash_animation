@@ -4,4 +4,7 @@ extends Node2D
 
 func _ready() -> void:
 	swf.set_animation("DEA")
-	
+
+
+func _on_swf_animation_play_end() -> void:
+	swf.set_animation("WAI")

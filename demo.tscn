@@ -8,7 +8,9 @@
 script = ExtResource("1_c3xy4")
 
 [node name="SwfAnimation" type="Node2D" parent="."]
-position = Vector2(793, 329)
+position = Vector2(924, 297)
 script = ExtResource("2_p6f6u")
 animation_data = ExtResource("3_bly2r")
-swf_current_animation = 12
+swf_current_animation = 0
+
+[connection signal="play_end" from="SwfAnimation" to="." method="_on_swf_animation_play_end"]

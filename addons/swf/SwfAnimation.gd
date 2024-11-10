@@ -3,10 +3,15 @@ extends Node2D
 
 class_name SwfAnimation
 
+signal play_end
+
 @export var animation_data: JSON:
 	set(data):
 		animation_data = data
 		notify_property_list_changed()
+		
+
+@export var preview: bool
 
 var current_movie_clip: MovieClip
 var animations: Dictionary
@@ -18,6 +23,7 @@ var animation_names: Array = []
 var frame_rate: float
 # 所有子MC动画实例
 var movie_clip_pool: Dictionary
+
 
 const base_transform: Vector2 = Vector2(685.5, 255)
 
@@ -65,8 +71,10 @@ func _get(property: StringName) -> Variant:
 
 func _process(delta: float) -> void:
 	# TODO: 动画播放
-	if animations == null || current_movie_clip == null:
+	if !preview:
 		return
+	if animations == null || current_movie_clip == null:
+		return		
 	# 总帧数
 	total_frames = current_movie_clip["total_frames"]
 	## 按照帧率播放
@@ -76,6 +84,7 @@ func _process(delta: float) -> void:
 		current_frame += 1
 		if current_frame >= total_frames:
 			current_frame = 0
+			play_end.emit()
 		# 删除所有子节点 TODO: 优化 用可见性控制
 		for child in get_children():
 			child.queue_free()
@@ -210,4 +219,5 @@ func parse():
 
 
 func set_animation(name: String):
+	preview = true
 	current_movie_clip = MovieClip.new(animations[name].total_frames,animations[name].timelines)

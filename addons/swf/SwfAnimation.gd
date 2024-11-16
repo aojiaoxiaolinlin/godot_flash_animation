@@ -37,7 +37,7 @@ func _get_property_list() -> Array[Dictionary]:
 	if animation_data == null:
 		return properties
 	else:
-		parse()	
+		parse()
 
 	if animation_names.size() > 0:
 		#pass
@@ -53,7 +53,7 @@ func _get_property_list() -> Array[Dictionary]:
 var elapsed_time: float = 0
 var current_frame: int = 0
 var total_frames: int = 0
-var internal_data:Dictionary = {}
+var internal_data: Dictionary = {}
 
 
 func _set(property: StringName, value: Variant) -> bool:
@@ -74,7 +74,7 @@ func _process(delta: float) -> void:
 	if !preview:
 		return
 	if animations == null || current_movie_clip == null:
-		return		
+		return
 	# 总帧数
 	total_frames = current_movie_clip["total_frames"]
 	## 按照帧率播放
@@ -91,7 +91,7 @@ func _process(delta: float) -> void:
 		run_frame(current_movie_clip, "Normal")
 
 
-func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], parent_transform: Transform3D = Transform3D.IDENTITY, parent_mult_color: Vector4 = Vector4(1,1,1,1),parent_add_color: Vector4 = Vector4(0,0,0,0)) -> void:
+func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], parent_transform: Transform3D = Transform3D.IDENTITY, parent_mult_color: Vector4 = Vector4(1, 1, 1, 1), parent_add_color: Vector4 = Vector4(0, 0, 0, 0)) -> void:
 	match movie_clip._deterimine_current_frame():
 		MovieClip.NextFrame.Next:
 			movie_clip.current_frame += 1
@@ -125,8 +125,8 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 		else:
 			current_transform = parent_transform * Transform3D(Vector3(matrix.a, matrix.b, 0), Vector3(matrix.c, matrix.d, 0), Vector3(0, 0, 1), Vector3(matrix.tx, matrix.ty, 0))
 		var color_transform = frame.transform.color_transform
-		var mult_color = Vector4(color_transform.mult_color[0],color_transform.mult_color[1],color_transform.mult_color[2],color_transform.mult_color[3])
-		var current_add_color = Vector4(color_transform.add_color[0],color_transform.add_color[1],color_transform.add_color[2],color_transform.add_color[3]) + mult_color * parent_add_color
+		var mult_color = Vector4(color_transform.mult_color[0], color_transform.mult_color[1], color_transform.mult_color[2], color_transform.mult_color[3])
+		var current_add_color = Vector4(color_transform.add_color[0], color_transform.add_color[1], color_transform.add_color[2], color_transform.add_color[3]) + mult_color * parent_add_color
 		var current_mult_color = parent_mult_color * mult_color
 		
 		var child_clip = movie_clip_pool.get(str(frame.id))
@@ -141,7 +141,10 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 			
 			# 设置滤镜
 			var filter_mode = 0; # 1:无滤镜 2:发光滤镜
-			var texture: Texture2D = shape_texture[str(frame.id)]
+			# 跳过目前未处理标签（DefineMorphShape）
+			var texture: Texture2D = shape_texture.get(str(frame.id))
+			if texture == null:
+				return
 			var res_sprite = Sprite2D.new()
 			for filter: Dictionary in filters:
 				var glow = filter.get("GlowFilter")
@@ -220,4 +223,4 @@ func parse():
 
 func set_animation(name: String):
 	preview = true
-	current_movie_clip = MovieClip.new(animations[name].total_frames,animations[name].timelines)
+	current_movie_clip = MovieClip.new(animations[name].total_frames, animations[name].timelines)

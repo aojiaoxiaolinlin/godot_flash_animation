@@ -14,7 +14,7 @@ vec3 blend_func(vec3 src, vec3 dst) {
 
 void fragment() {
 	// Called for every pixel the material is visible on.
-	vec4 dst = texture(screen_texture,UV);
+	vec4 dst = texture(screen_texture, SCREEN_UV);
 	vec4 src = texture(TEXTURE,UV);
 	if (src.a > 0.0) {
 		COLOR = vec4(dst.rgb * src.a, src.a * dst.a);

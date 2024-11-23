@@ -7,6 +7,10 @@ The plugin can bring Flash animations into Godot.
 - [x] Support for importing Flash animations and Blend Render.
 - [x] Multi Animation.  (Require follow certain rules, refer to the conversion tool.)
 - [ ] Filter Render.
+  filter render
+- [x] Color Filter.
+- [x] Blur Filter.
+- [ ] Glow Filter.
 
 ## Demo
 

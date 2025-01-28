@@ -15,6 +15,10 @@ run/main_scene="res://demo.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/codeandweb.texturepacker/plugin.cfg", "res://addons/swf/plugin.cfg")

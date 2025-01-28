@@ -12,6 +12,7 @@ signal play_end
 		
 
 @export var preview: bool
+@export var use_root_transform: bool
 
 var current_movie_clip: MovieClip
 var animations: Dictionary
@@ -104,7 +105,7 @@ func _process(delta: float) -> void:
 			i += 1
 
 
-func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], parent_transform: Transform3D = Transform3D.IDENTITY, parent_mult_color: Vector4 = Vector4(1, 1, 1, 1), parent_add_color: Vector4 = Vector4(0, 0, 0, 0)) -> void:
+func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], parent_transform: Transform3D = Transform3D.IDENTITY, parent_mult_color: Vector4 = Vector4(1, 1, 1, 1), parent_add_color: Vector4 = Vector4(0, 0, 0, 0),parent_depth:String = "0") -> void:
 	match movie_clip._deterimine_current_frame():
 		MovieClip.NextFrame.Next:
 			movie_clip.current_frame += 1
@@ -133,7 +134,7 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 		var current_transform: Transform3D
 
 		# 不应用根动画的位置
-		if (current_movie_clip == movie_clip):
+		if ((current_movie_clip == movie_clip) && !use_root_transform):
 			current_transform = parent_transform * Transform3D(Vector3(matrix.a, matrix.b, 0), Vector3(matrix.c, matrix.d, 0), Vector3(0, 0, 1), Vector3(0, 0, 0))
 		else:
 			current_transform = parent_transform * Transform3D(Vector3(matrix.a, matrix.b, 0), Vector3(matrix.c, matrix.d, 0), Vector3(0, 0, 1), Vector3(matrix.tx, matrix.ty, 0))
@@ -143,9 +144,10 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 		var current_mult_color = parent_mult_color * mult_color
 		
 		var child_clip = movie_clip_pool.get(str(frame.id))
+		var current_depth_layer = parent_depth + depth
 		# 如果子动画存在，则递归调用
 		if child_clip != null:
-			run_frame(child_clip, frame.blend_mode, frame.filters, current_transform, current_mult_color, current_add_color)
+			run_frame(child_clip, frame.blend_mode, frame.filters, current_transform, current_mult_color, current_add_color, current_depth_layer)
 		else:
 			# 加载纹理资源
 			var shader_material = ShaderMaterial.new()
@@ -181,9 +183,9 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 					var strength = glow.strength
 					var flags: int = glow.flags
 					# 发光需要先模糊
-					create_blur_filter(depth, frame.id, blur_x, blur_y, flags, texture, shader_material, current_transform, shape_translate, current_mult_color, current_add_color)
+					create_blur_filter(current_depth_layer, frame.id, blur_x, blur_y, flags, texture, shader_material, current_transform, shape_translate, current_mult_color, current_add_color)
 					var blur_flags = (flags & 0b11111) << 3
-					
+					is_processed = true
 					shader_material.set_shader_parameter("glow_color", Color(color[0], color[1], color[2], color[3]))
 					shader_material.set_shader_parameter("glow_strength", strength)
 					shader_material.set_shader_parameter("glow_inner", 1 if flags & (1 << 7) != 0 else 0)
@@ -198,8 +200,7 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 					var blur_y = blur_filter.blur_y
 					var num_pass = blur_filter.flags
 					is_processed = true
-					create_blur_filter(depth, frame.id, blur_x, blur_y, num_pass, texture, shader_material, current_transform, shape_translate, current_mult_color, current_add_color)
-				
+					create_blur_filter(current_depth_layer, frame.id, blur_x, blur_y, num_pass, texture, shader_material, current_transform, shape_translate, current_mult_color, current_add_color)
 				# 颜色滤镜
 				var color_matrix_filter = filter.get("ColorMatrixFilter")
 				if color_matrix_filter != null:
@@ -208,18 +209,18 @@ func run_frame(movie_clip: MovieClip, blend_mode: String, filters: Array = [], p
 					
 					
 			if !is_processed:
-				visiable_node.append(str(depth) + "-" + str(frame.id))
+				visiable_node.append(current_depth_layer + "-" + str(frame.id))
 
 				shader_material.set_shader_parameter("filter_mode", filter_mode)
 				var res_sprite
-				if node_cache.get(str(depth) + "-" + str(frame.id)) != null:
-					res_sprite = node_cache.get(str(depth) + "-" + str(frame.id))
+				if node_cache.get(current_depth_layer + "-" + str(frame.id)) != null:
+					res_sprite = node_cache.get(current_depth_layer + "-" + str(frame.id))
 					res_sprite.material = shader_material
 				else:
 					res_sprite = Sprite2D.new()
-					node_cache[str(depth) + "-" + str(frame.id)] = res_sprite
+					node_cache[current_depth_layer + "-" + str(frame.id)] = res_sprite
 					res_sprite.texture = texture
-					node_cache[str(depth) + "-" + str(frame.id)] = res_sprite
+					node_cache[current_depth_layer + "-" + str(frame.id)] = res_sprite
 					add_child(res_sprite)
 					res_sprite.material = shader_material
 				
@@ -294,6 +295,7 @@ func create_blur_filter(depth: String, charact_id: int, blur_x: float, blur_y: f
 		
 		node_cache[str(depth) + "-" + str(charact_id) + "subViewPost"] = blur_view
 		add_child(blur_view)
+		return blur_view
 		
 	# 获取模糊后的纹理以显示
 	var texture_rec: TextureRect

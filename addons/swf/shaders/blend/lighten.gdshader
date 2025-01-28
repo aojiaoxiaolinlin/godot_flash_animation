@@ -18,8 +18,8 @@ void fragment() {
 	vec4 dst = texture(screen_texture, SCREEN_UV);
 	vec4 src = texture(TEXTURE, UV);
 	if (src.a > 0.0) {
-		//vec4 res = vec4(src.rgb * (1.0 - dst.a) + dst.rgb * (1.0 - src.a) + src.a * dst.a * blend_func(src.rgb / src.a, dst.rgb / dst.a), src.a + dst.a * (1.0 - src.a));
-		vec4 res = max(dst,src);
+		vec4 res = vec4(src.rgb * (1.0 - dst.a) + dst.rgb * (1.0 - src.a) + src.a * dst.a * blend_func(src.rgb / src.a, dst.rgb / dst.a), src.a + dst.a * (1.0 - src.a));
+		//vec4 res = max(dst,src);
 		if (res.a >  0.0){
 			//res = vec4(res.rgb / res.a, res.a);
 			res = res * mult_color + add_color;

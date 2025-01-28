@@ -4,8 +4,8 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#swf.set_animation("WAI")
-	swf.set_animation("default")
+	swf.set_animation("WAI")
+	#swf.set_animation("default")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

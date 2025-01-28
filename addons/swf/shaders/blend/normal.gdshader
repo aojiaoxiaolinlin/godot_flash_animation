@@ -17,7 +17,9 @@ void fragment() {
 		bool inner = glow_inner > 0;
 		bool knockout = glow_knockout > 0;
 		bool composite_source = glow_composite_source > 0;
-		float blur = texture(blurred, UV).a;
+		vec4 blur_src = texture(blurred, UV);
+		float blur = blur_src.a;
+		
 		vec4 dest = texture(TEXTURE, UV);
 
 		vec4 result = vec4(glow_color.r, glow_color.g, glow_color.b, 1.0);
@@ -40,7 +42,12 @@ void fragment() {
 				result = result * alpha;
 			}
 		}
-		//COLOR = result;                
+		//COLOR = result;
+		COLOR = blur_src;
+		//if (blur_src.r == 0.0 && blur_src.g == 0.0 && blur_src.b == 0.0){
+			//
+			//
+		//}
 	}
 	if ((filter_mode & 8) !=0 ) {
 		vec4 src = texture(TEXTURE, UV);

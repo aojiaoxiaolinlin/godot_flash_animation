@@ -16,7 +16,7 @@ The plugin can bring Flash animations into Godot.
 
 ## Demo
 
-![demo](./assets/images/8e68e59cf2e75b17a067c9f0eda1505a.png)
+![demo](./doc/godot-flash-demo.gif)
 
 ## Usage
 
